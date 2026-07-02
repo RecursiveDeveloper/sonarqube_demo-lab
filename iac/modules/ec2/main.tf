@@ -4,24 +4,24 @@ resource "aws_instance" "sonarqube_ec2" {
   vpc_security_group_ids      = [aws_security_group.sonarqube_sg.id]
   subnet_id                   = var.sonarqube_public_subnet_id
   associate_public_ip_address = true
-  user_data                   = file("./scripts/user_data_ubuntu.sh")
+  user_data                   = file("./scripts/user_data.sh")
 
   tags                        = {
-    Name                      = "Sonarqube_ec2"
-    Environment               = "Dev"
-    ManagedBy                 = "Terraform"
+    Name                      = "sonarqube_ec2"
+    Environment               = "dev"
+    ManagedBy                 = "terraform"
   }
 }
 
 resource "aws_security_group" "sonarqube_sg" {
   name            = "sonarqube_sg"
-  description     = "Security Group allowing EC2 access"
+  description     = "security group allowing ec2 access"
   vpc_id          = var.sonarqube_vpc_id
 
   tags            = {
-    Name          = "Sonarqube_sg"
-    Environment   = "Dev"
-    ManagedBy     = "Terraform"
+    Name          = "sonarqube_sg"
+    Environment   = "dev"
+    ManagedBy     = "terraform"
   }
 }
 

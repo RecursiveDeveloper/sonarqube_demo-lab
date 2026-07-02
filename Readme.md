@@ -1,44 +1,152 @@
-# SonarQube
+## 🚀 About Me
+I'm a junior DevOps engineer with some expertise in BackEnd development using Java and Node.js; scripting skills with Python, Bash and JavaScript; besides CI/CD and cloud knowledge of AWS and Azure DevOps tools ...
 
-SonarQube is a self-managed, automatic code review tool that systematically helps you deliver clean code. As a core element of our Sonar solution, SonarQube integrates into your existing workflow and detects issues in your code to help you perform continuous code inspections of your projects. The tool analyses 30+ different programming languages and integrates into your CI pipeline and DevOps platform to ensure that your code meets high-quality standards. [See more](https://docs.sonarqube.org/latest/)
+<p align="center">
+<img src="https://c4.wallpaperflare.com/wallpaper/694/164/1000/digital-art-animals-eagle-bird-of-prey-birds-hd-wallpaper-preview.jpg" alt="Logo" width="400" height="230">
+</p>
 
-![alt text](https://csl.com.co/wp-content/uploads/2020/10/sonar.png)
+![linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![javascript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![nodejs](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![mysql](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white)
+![aws](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![azuredevops](https://img.shields.io/badge/Azure_DevOps-0078D7?style=for-the-badge&logo=azure-devops&logoColor=white)
 
-This project is aimed to provide various ways to install SonarQube using technologies like Docker and Iac.
+## 🔗 Portfolio
+[![portfolio](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/RecursiveDeveloper)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jhoan-jesus-ortiz-sandoval-a66152198/)
 
-## Installation using Docker
-![alt text](https://d1.awsstatic.com/acs/characters/Logos/Docker-Logo_Horizontel_279x131.b8a5c41e56b77706656d61080f6a0217a3ba356d.png)
+# SonarQube Demo Lab
 
-Check if Docker is installed in your OS. Otherwise, follow documentation according to your needs. [Install Docker Engine](https://docs.docker.com/engine/install/)
+SonarQube is a self-managed, automatic code review tool that helps you deliver clean code by detecting issues across 30+ programming languages and integrating into your CI/CD pipeline. [See more](https://docs.sonarqube.org/latest/)
 
-## Usage
+This lab is aimed at providing various ways to deploy a SonarQube server: locally using Docker containers, manually provisioning an AWS EC2 instance using Terraform CLI, or fully automated through a GitHub Actions pipeline.
 
-Run SonarQube container with attached volumes
-```bash
-bash Docker/Run_SonarQ.sh
+## Tech Stack
+
+- **Code Quality:** SonarQube
+- **Containerization:** Docker
+- **IaC:** Terraform
+- **Cloud Provider:** AWS (EC2, VPC, S3)
+- **CI/CD:** GitHub Actions
+
+## Project Structure
+
 ```
-Once your instance is up and running, Log in to http://localhost:9000 using System Administrator credentials:
+sonarqube_demo-lab/
+├── .github/
+│   ├── actions/
+│   │   └── setup/
+│   │       └── action.yml          # Composite action: AWS CLI, credentials, Terraform setup
+│   └── workflows/
+│       └── main.yml                # GitHub Actions workflow (deploy / destroy)
+├── iac/
+│   ├── modules/
+│   │   ├── ec2/                    # EC2 instance module (t2.medium)
+│   │   └── vpc/                    # VPC and public subnet module
+│   ├── scripts/
+│   │   └── user_data.sh            # EC2 bootstrap script for SonarQube
+│   ├── main.tf                     # Root module
+│   ├── variables.tf                # Input variables (AMI, instance type)
+│   ├── outputs.tf                  # Output values
+│   └── provider.tf                 # AWS provider + S3 remote backend
+├── local_deploy/
+│   ├── start_Sonarq.sh             # Start SonarQube container with named volumes
+│   └── stop_Sonarq.sh              # Stop and clean up container, image, and volumes
+└── README.md
+```
+
+---
+
+## Deployment
+
+### 1. Local deployment using Docker containers
+
+Check if Docker is installed on your OS. Otherwise, follow the documentation for your platform. [Install Docker Engine](https://docs.docker.com/engine/install/)
+
+**Start SonarQube** — runs the container with three named volumes for data persistence:
+
+```bash
+bash local_deploy/start_Sonarq.sh
+```
+
+Once the instance is up, log in at [http://localhost:9000](http://localhost:9000) with the default System Administrator credentials:
 
 ```text
-login: admin
+login:    admin
 password: admin
 ```
 
-[See more](https://docs.sonarqube.org/latest/try-out-sonarqube/)
+[See more about first-time setup](https://docs.sonarqube.org/latest/try-out-sonarqube/)
 
-&nbsp;
+**Stop SonarQube** — removes the container, image, and all associated volumes:
 
-Remove SonarQube container with all its attached volumes
 ```bash
-bash Docker/Delete_SonarQ.sh
+bash local_deploy/stop_Sonarq.sh
 ```
 
-## Contributing
+---
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+### 2. Manual deployment using Terraform CLI
 
-Please make sure to update tests as appropriate.
+Provisions a SonarQube server on AWS (EC2 `t2.medium` inside a dedicated VPC). State is stored remotely in an S3 bucket.
+
+#### Prerequisites
+
+1. Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configure your credentials:
+   ```bash
+   aws configure
+   ```
+2. Install [Terraform CLI](https://developer.hashicorp.com/terraform/install) (version compatible with `~> 6.0` AWS provider).
+3. Make sure the S3 bucket for the remote backend already exists:
+   ```
+   terraform-state-sonarq-282293003525-us-east-1-an   (us-east-1)
+   ```
+
+#### Deploy
+
+```bash
+cd iac
+terraform init
+terraform plan
+terraform apply
+```
+
+#### Destroy
+
+```bash
+cd iac
+terraform destroy
+```
+
+---
+
+### 3. Automated deployment using GitHub Actions *(work in progress)*
+
+The workflow defined in `.github/workflows/main.yml` automates the full deploy/destroy lifecycle against AWS using Terraform. It can be triggered manually via `workflow_dispatch` or on every push to `main` (excluding docs and config changes).
+
+#### Required GitHub Secrets
+
+| Secret | Description |
+|---|---|
+| `AWS_ACCESS_KEY` | AWS access key ID with permissions to create EC2, VPC, and S3 resources |
+| `AWS_SECRET_KEY` | AWS secret access key |
+
+#### Trigger manually
+
+1. Go to **Actions** → **workflow to deploy a sonarqube server into aws**
+2. Click **Run workflow**
+3. Select the action: `deploy` or `destroy`
+
+> **Note:** This workflow is still underway. Some jobs may reference reusable workflows (`deploy.yml`, `destroy.yml`) that are not yet implemented.
+
+---
+
+## Authors
+
+- [@RecursiveDeveloper](https://github.com/RecursiveDeveloper)
 
 ## License
 

@@ -4,9 +4,9 @@ resource "aws_vpc" "sonarqube_vpc" {
   enable_dns_hostnames  = true
 
   tags              = {
-    Name            = "Sonarqube_vpc"
-    Environment     = "Dev"
-    ManagedBy       = "Terraform"
+    Name            = "sonarqube_vpc"
+    Environment     = "dev"
+    ManagedBy       = "terraform"
   }
 }
 
@@ -15,9 +15,9 @@ resource "aws_subnet" "sonarqube_public_subnet" {
   cidr_block        = "10.0.1.0/24"
 
   tags              = {
-    Name            = "Sonarqube_public_subnet"
-    Environment     = "Dev"
-    ManagedBy       = "Terraform"
+    Name            = "sonarqube_public_subnet"
+    Environment     = "dev"
+    ManagedBy       = "terraform"
   }
 }
 
@@ -26,9 +26,9 @@ resource "aws_subnet" "sonarqube_private_subnet" {
   cidr_block        = "10.0.2.0/24"
 
   tags              = {
-    Name            = "Sonarqube_private_subnet"
-    Environment     = "Dev"
-    ManagedBy       = "Terraform"
+    Name            = "sonarqube_private_subnet"
+    Environment     = "dev"
+    ManagedBy       = "terraform"
   }
 }
 
@@ -37,8 +37,8 @@ resource "aws_internet_gateway" "sonarqube_ig" {
 
   tags              = {
     Name            = "sonarqube_ig"
-    Environment     = "Dev"
-    ManagedBy       = "Terraform"
+    Environment     = "dev"
+    ManagedBy       = "terraform"
   }
 }
 
@@ -57,8 +57,8 @@ resource "aws_route_table" "sonarqube_public_rt" {
 
   tags              = {
     Name            = "sonarqube_public_rt"
-    Environment     = "Dev"
-    ManagedBy       = "Terraform"
+    Environment     = "dev"
+    ManagedBy       = "terraform"
   }
 }
 
