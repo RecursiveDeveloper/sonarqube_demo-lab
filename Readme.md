@@ -100,9 +100,11 @@ Provisions a SonarQube server on AWS (EC2 `t2.medium` inside a dedicated VPC). S
    aws configure
    ```
 2. Install [Terraform CLI](https://developer.hashicorp.com/terraform/install) (version compatible with `~> 6.0` AWS provider).
-3. Make sure the S3 bucket for the remote backend already exists:
-   ```
-   terraform-state-sonarq-282293003525-us-east-1-an   (us-east-1)
+3. Make sure the S3 bucket for the remote backend already exists in your AWS account.
+4. Open `iac/provider.tf` and replace the placeholder values with your own:
+   ```hcl
+   bucket = "AWS_REGION"      # replace with your S3 bucket name
+   region = "S3_BUCKET_NAME"  # replace with your AWS region (e.g. us-east-1)
    ```
 
 #### Deploy
@@ -123,24 +125,34 @@ terraform destroy
 
 ---
 
-### 3. Automated deployment using GitHub Actions *(work in progress)*
+### 3. Automated deployment using GitHub Actions
 
-The workflow defined in `.github/workflows/main.yml` automates the full deploy/destroy lifecycle against AWS using Terraform. It can be triggered manually via `workflow_dispatch` or on every push to `main` (excluding docs and config changes).
+The workflow defined in `.github/workflows/main.yml` automates the full deploy/destroy lifecycle against AWS using Terraform. It is triggered manually via `workflow_dispatch`. Push to `main` is currently disabled but can be enabled by uncommenting the `push` trigger block in `main.yml` if desired.
 
-#### Required GitHub Secrets
+#### Required repository variables
+
+The following must be set as **Actions variables** in the repository settings (`Settings → Secrets and variables → Actions → Variables`):
+
+| Variable | Description |
+|---|---|
+| `AWS_REGION` | AWS region where resources will be provisioned (e.g. `us-east-1`) |
+| `S3_BUCKET_NAME` | Name of the existing S3 bucket used for Terraform remote state |
+| `TERRAFORM_VERSION` | Terraform version to use in the pipeline (e.g. `1.12.2`) |
+
+#### Required repository secrets
+
+The following must be set as **Actions secrets** in the repository settings (`Settings → Secrets and variables → Actions → Secrets`):
 
 | Secret | Description |
 |---|---|
-| `AWS_ACCESS_KEY` | AWS access key ID with permissions to create EC2, VPC, and S3 resources |
-| `AWS_SECRET_KEY` | AWS secret access key |
+| `AWS_ACCESS_KEY_ID` | AWS access key ID with permissions to create EC2, VPC, and S3 resources |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret access key |
 
 #### Trigger manually
 
 1. Go to **Actions** → **workflow to deploy a sonarqube server into aws**
 2. Click **Run workflow**
 3. Select the action: `deploy` or `destroy`
-
-> **Note:** This workflow is still underway. Some jobs may reference reusable workflows (`deploy.yml`, `destroy.yml`) that are not yet implemented.
 
 ---
 
