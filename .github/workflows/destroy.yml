@@ -17,6 +17,14 @@ jobs:
           aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           terraform_version: ${{ vars.terraform_version }}
+
+      - name: replace tokens
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["**/*.tf"]'
+        env:
+          S3_BUCKET_NAME: ${{ vars.s3_bucket_name }}
+          AWS_REGION: ${{ vars.aws_region }}
           
       - name: Terraform Init
         run: terraform init
