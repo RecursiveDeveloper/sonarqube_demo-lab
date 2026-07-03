@@ -18,6 +18,10 @@ on:
   #   branches:
   #     - main
 
+defaults:
+  run:
+    working-directory: ./iac
+
 jobs:
   call-deploy-workflow:
     if: ${{ github.event.inputs.action == 'deploy' }}
