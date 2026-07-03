@@ -7,12 +7,12 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "terraform-state-sonarq-282293003525-us-east-1-an"
+    bucket = "#{S3_BUCKET_NAME}#"
     key    = "state"
-    region = "us-east-1"
+    region = "#{AWS_REGION}#"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "#{AWS_REGION}#"
 }

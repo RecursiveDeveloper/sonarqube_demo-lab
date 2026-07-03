@@ -1,0 +1,39 @@
+name: "Deploy workflow for sonarqube server"
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: setup environment
+        uses: ./.github/actions/setup-composite
+        with:
+          aws-region: ${{ vars.aws_region }}
+          aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          terraform_version: ${{ vars.terraform_version }}
+      
+      - name: replace tokens
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["**/*.tf"]'
+        env:
+          S3_BUCKET_NAME: ${{ vars.s3_bucket_name }}
+          AWS_REGION: ${{ vars.aws_region }}
+
+      - name: Terraform Init
+        run: terraform init
+      
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
