@@ -1,4 +1,4 @@
-name: "Deploy workflow for sonarqube server"
+name: "deploy workflow for sonarqube server"
 
 on:
   workflow_call:
@@ -28,18 +28,18 @@ jobs:
           S3_BUCKET_NAME: ${{ vars.s3_bucket_name }}
           AWS_REGION: ${{ vars.aws_region }}
 
-      # - name: Terraform Init
-      #   run: terraform init
-      #   working-directory: ./iac
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./iac
       
-      # - name: Terraform Validate
-      #   run: terraform validate
-      #   working-directory: ./iac
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./iac
 
-      # - name: Terraform Plan
-      #   run: terraform plan
-      #   working-directory: ./iac
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./iac
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
-      #   working-directory: ./iac
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./iac

@@ -1,4 +1,4 @@
-name: "Destroy workflow for sonarqube server"
+name: "destroy workflow for sonarqube server"
 
 on:
   workflow_call:
@@ -21,7 +21,9 @@ jobs:
       - name: replace tokens
         uses: cschleiden/replace-tokens@v1
         with:
-          files: '["**/*.tf"]'
+          tokenPrefix: '#{'
+          tokenSuffix: '}#'
+          files: '["iac/*.tf"]'
         env:
           S3_BUCKET_NAME: ${{ vars.s3_bucket_name }}
           AWS_REGION: ${{ vars.aws_region }}
